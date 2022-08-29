@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import * as Bcrypt from 'bcryptjs';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
@@ -32,17 +33,50 @@ describe('AdminService', () => {
     adminRepository = module.get(getRepositoryToken(Admin));
   });
 
+  const adminArgs = {
+    account: 'accountId',
+    name: '테스터',
+    password: 'pass',
+  };
+
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  // it('get school into admin', async () => {
-  //   const result = await service.getSchool(1);
-  //   expect(result.name).toEqual('명덕');
-  // });
+  describe('validateUser()', () => {
+    it('관리자 비밀번호 테스트', async () => {
+      const salt = await Bcrypt.genSalt(10);
+      const password = await Bcrypt.hash(adminArgs.password, salt);
+      const cryptUser = {
+        ...adminArgs,
+        password,
+      };
+      adminRepository.save.mockResolvedValue(cryptUser);
+      adminRepository.findOne.mockReturnValue(cryptUser);
 
-  // it('find admin', async () => {
-  //   const result = await adminRepository.findOne(1);
-  //   expect(result.id).toEqual(1);
-  // });
+      const result = await service.validateAdmin(adminArgs);
+      expect(result).toBe(cryptUser);
+    });
+
+    it('관리자 비밀번호 검증 실패', async () => {
+      adminRepository.save.mockResolvedValue(adminArgs);
+      adminRepository.findOne.mockReturnValue(adminArgs);
+
+      try {
+        await service.validateAdmin(adminArgs);
+      } catch (error) {
+        expect(error.status).toBe(404);
+      }
+    });
+  });
+
+  describe('getAdmin()', () => {
+    it('getUser not found', async () => {
+      try {
+        await service.getAdmin('user1');
+      } catch (error) {
+        expect(error.status).toBe(404);
+      }
+    });
+  });
 });

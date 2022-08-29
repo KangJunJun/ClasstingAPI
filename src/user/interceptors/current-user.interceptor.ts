@@ -1,11 +1,13 @@
 import {
   CallHandler,
-  ExecutionContext,
+  //ExecutionContext,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
 import { UserService } from '../user.service';
-
+interface ExecutionContext {
+  switchToHttp(): any;
+}
 @Injectable()
 export class CurrentUserInterceptor implements NestInterceptor {
   constructor(private userService: UserService) {}

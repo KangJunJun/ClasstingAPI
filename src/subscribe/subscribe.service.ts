@@ -5,7 +5,6 @@ import { Subscribe } from '../entities/subscribe.entity';
 import { SubscribeDto } from './dto/subscribe.dto';
 import { User } from '../entities/user.entity';
 import { SchoolService } from '../school/school.service';
-import { FeedService } from '../feed/feed.service';
 
 @Injectable()
 export class SubscribeService {
@@ -13,7 +12,6 @@ export class SubscribeService {
     @InjectRepository(Subscribe)
     private readonly subscribeRepository: Repository<Subscribe>,
     private readonly schoolService: SchoolService,
-    private readonly feedService: FeedService,
   ) {}
   public async subscribeToggle(subscribeDto: SubscribeDto, user: User) {
     const checkSchool = await this.schoolService.getSchool(
@@ -62,6 +60,12 @@ export class SubscribeService {
     if (!checkSubscribe)
       throw new UnauthorizedException(`This is an unsubscribed school.`);
 
-    return await this.feedService.findFeedsBySchool(schoolId);
+    const subscribeBySchool = await this.subscribeRepository.findOne({
+      where: { schoolId },
+      relations: ['school', 'school.feed'],
+      order: { school: { feed: { createdAt: 'DESC' } } },
+    });
+
+    return subscribeBySchool?.school?.feed;
   }
 }

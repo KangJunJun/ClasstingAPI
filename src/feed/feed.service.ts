@@ -84,15 +84,6 @@ export class FeedService {
     return feed;
   }
 
-  async findFeedsBySchool(schoolId: number) {
-    const feeds = await this.feedRepository.find({
-      where: { school: { id: schoolId } },
-      order: { id: 'DESC' },
-    });
-
-    return feeds;
-  }
-
   async update(id: number, updateFeedDto: UpdateFeedDto, admin: Admin) {
     const feed = await this.feedRepository.findOne({ where: { id } });
     if (!feed) {

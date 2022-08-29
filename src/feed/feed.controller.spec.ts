@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FeedController } from './feed.controller';
 import { FeedService } from './feed.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Feed } from 'src/entities/feed.entity';
-import { DataSource } from 'typeorm';
+import { getDataSourceToken, getRepositoryToken } from '@nestjs/typeorm';
+import { Feed } from '../entities/feed.entity';
 const mockRepository = () => ({
   findOne: jest.fn(),
   save: jest.fn(),
@@ -18,7 +17,11 @@ describe('FeedController', () => {
       controllers: [FeedController],
       providers: [
         FeedService,
-        { provide: getRepositoryToken(Feed), useValue: mockRepository },
+        { provide: getRepositoryToken(Feed), useValue: mockRepository() },
+        {
+          provide: getDataSourceToken(),
+          useValue: mockRepository(),
+        },
       ],
     }).compile();
 

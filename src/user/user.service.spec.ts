@@ -7,9 +7,9 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { HttpException } from '@nestjs/common';
+import * as Bcrypt from 'bcryptjs';
 
 const mockUserRepository = () => ({
-  //findOne: jest.fn((entity) => entity),
   findOne: jest.fn(),
   save: jest.fn(),
   create: jest.fn(),
@@ -60,23 +60,33 @@ describe('UsersService', () => {
   });
 
   describe('validateUser()', () => {
-    it('should validate user', async () => {
-      userRepository.save.mockResolvedValue(userArgs);
-      const user = await service.createUser(userArgs);
+    it('유저 비밀번호 검증 성공', async () => {
+      const salt = await Bcrypt.genSalt(10);
+      const password = await Bcrypt.hash(userArgs.password, salt);
+      const cryptUser = {
+        ...userArgs,
+        password,
+      };
+      userRepository.save.mockResolvedValue(cryptUser);
+      userRepository.findOne.mockReturnValue(cryptUser);
 
-      const result = await service.validateUser(user);
-      expect(result).toBe(userArgs);
+      const result = await service.validateUser(userArgs);
+      expect(result).toBe(cryptUser);
+    });
+
+    it('유저 비밀번호 검증 실패', async () => {
+      userRepository.save.mockResolvedValue(userArgs);
+      userRepository.findOne.mockReturnValue(userArgs);
+
+      try {
+        await service.validateUser(userArgs);
+      } catch (error) {
+        expect(error.status).toBe(404);
+      }
     });
   });
 
   describe('getUser()', () => {
-    // it('getUser Test', async () => {
-    //   const findOneSpy = jest.spyOn(service, 'getUser');
-    //   const findOneOptions: FindOneOptions = {};
-    //   await service.getUser('user1');
-
-    //   expect(findOneSpy).toHaveBeenCalledWith(findOneOptions);
-    // });
     it('getUser not found', async () => {
       try {
         await service.getUser('user1');

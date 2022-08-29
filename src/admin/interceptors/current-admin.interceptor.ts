@@ -1,11 +1,13 @@
 import {
   CallHandler,
-  ExecutionContext,
+  //ExecutionContext,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
 import { AdminService } from '../admin.service';
-
+interface ExecutionContext {
+  switchToHttp(): any;
+}
 @Injectable()
 export class CurrentAdminInterceptor implements NestInterceptor {
   constructor(private adminService: AdminService) {}

@@ -7,7 +7,7 @@ import { SchoolModule } from '../school/school.module';
 import { FeedModule } from '../feed/feed.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Subscribe]), SchoolModule, FeedModule],
+  imports: [TypeOrmModule.forFeature([Subscribe]), SchoolModule],
   controllers: [SubscribeController],
   providers: [SubscribeService],
   exports: [SubscribeService],

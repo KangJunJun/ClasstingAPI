@@ -44,7 +44,7 @@ export class SchoolService {
     });
 
     await this.schoolRepository.save(school);
-    delete school.admin;
+    delete school?.admin;
 
     return school;
   }

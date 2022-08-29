@@ -37,6 +37,7 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.1",
     "mysql2": "^2.3.3",
+    "node-mocks-http": "^1.11.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
@@ -88,7 +89,8 @@
       ".module.ts",
       "src/main.ts",
       "src/data-source.ts",
-      "src/ormConfig.ts"
+      "src/ormConfig.ts",
+      "src/auth/"
     ],
     "testEnvironment": "node",
     "moduleNameMapper": {
