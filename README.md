@@ -1,3 +1,4 @@
+
 # Classting_School_Feed_API
 
 클래스팅 백엔드 사전과제
@@ -8,6 +9,7 @@
 - [구현](#2-구현)
 - [실행 및 테스트](#3-실행-및-테스트)
 - [API 명세](#4-API-명세)
+- [테스트 커버리지](#5-테스트-커버리지)
 
 ## 1. 요구사항 분석
 
@@ -115,7 +117,7 @@
       - password: string
   - `POST` /user/logout (사용자 로그아웃)
 
-  - Admin (src/admin/admin.contorller.ts)
+- Admin (src/admin/admin.contorller.ts)
   - `POST` /admin (관리자 생성)
     - `create-admin.dto.ts`: data validation & serialization
       - account : string
@@ -407,3 +409,15 @@
     		}
     	]
     ```
+   
+   ## 5.테스트 커버리지
+
+	``
+		$ npm run test:cov 
+	``
+
+	![](https://i.imgur.com/5uy7xgn.png)
+	
+
+- 커버리지는 약 80% 정도 달성했습니다. 
+- TDD 방식으로 진행하지 않아 Unit Test 의 내용이 다소 허술합니다.
