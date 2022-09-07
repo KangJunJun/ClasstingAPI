@@ -70,7 +70,7 @@
 
 ### DB 생성 및 App 연결
 
-- Database 는 docker mysql:8 image를 상용하여 컨테이너로 로컬 환경에 구동시켰습니다.
+- Database 는 docker mysql:8 image를 사용하여 컨테이너로 로컬 환경에 구동시켰습니다.
 - TypeORM configuration을 위하여 `src/config/env` 폴더에 `.development.env` 파일을 만들어 development environment에서의 환경 변수를 등록하였습니다.
 - `ormConfig.ts` 작성
   - TypeOrmModule configuration을 위해 TypeOrmModuleOption을 반환하는 함수를 가진 클래스를 정의하고, 이를 `App.module.ts` 에서 import 하여 설정 값으로 사용하였습니다.
